@@ -51,21 +51,10 @@
     Gz = [Gz11,Gz12;Gz21,Gz22]
 %%
 
-Gz11
 [num den] = tfdata(Gz11, 'v')
-Gz11 = tf(num,den,Tc,'Variable','z^-1')
 
-Gz12
-[num den] = tfdata(Gz12, 'v')
-Gz12 = tf(num,den,Tc,'Variable','z^-1')
+Gz11 = tf
 
-Gz21
-[num den] = tfdata(Gz21, 'v')
-Gz21 = tf(num,den,Tc,'Variable','z^-1')
-
-Gz22
-[num den] = tfdata(Gz22, 'v')
-Gz22 = tf(num,den,Tc,'Variable','z^-1')
 
 %%
 step(G)
