@@ -5,7 +5,6 @@
 % @author José Borges do Carmo Neto                   %
 % @email jose.borges90@hotmail.com                    %
 % simulation MIMO                                     %
-%                                                     %
 %  -- Version: 1.0  - 18/09/2022                      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Coluna de destilação descrita em Wood e Berry (1973)
@@ -52,12 +51,8 @@
 %%
 figure
 step(G)
-hold on 
-step(Gz)
-hold off
+
 %%
-
-
 Gz11
 [num den] = tfdata(Gz11, 'v');
 Gz11 = tf(num,den,Tc,'Variable','z^-1')
@@ -73,86 +68,83 @@ Gz21 = tf(num,den,Tc,'Variable','z^-1')
 Gz22
 [num den] = tfdata(Gz22, 'v');
 Gz22 = tf(num,den,Tc,'Variable','z^-1')
-
-%%
-figure
-step(G)
-hold on 
-step(Gz)
-      
-%% Aplicando o controlador - OLD version
+   
+%% Aplicando o DEGRAU
+nptos = 300;
 % REF 1
 for i=1:nptos,
-    if (i<=nptos/2)  ref(i)=1; end;
-    if (i>nptos/2)   ref(i) = 2; end;
+    if (i<=nptos/2)  ref1(i)=0.5; end;
+    if (i>nptos/2)   ref1(i) = 1; end;
 end ;
 % REF 2
 for i=1:nptos,
-    if (i<=nptos/2)  ref(i)=1; end;
-    if (i>nptos/2)   ref(i) = 2; end;
+    if (i<=nptos/2)  ref2(i)=0.5; end;
+    if (i>nptos/2)   ref2(i) = 1; end;
 end ;
 
-y(4)=0 ; y(3)=0 ; y(2)=0 ; y(1)=0 ; 
-u(1)=0 ; u(2)=0 ; u(3)=0; u(4)=0;
+for i=1:nptos,
+    y1(i)= 0; 
+    y2(i) = 0;
+    y11(i)=0;
+    y12(i) = 0;
+    y21(i) = 0;
+    y22(i)=0;
+    u1(i)= 0; 
+    u2(i) = 0;
+    erro1(1)= 0; 
+    erro2(1)= 0; 
+end
+ 
+y1(3)=0 ; y1(2)=0 ; y1(1)=0;
+y2(4)=0 ; y2(3)=0 ; y2(2)=0 ; y2(1)=0;
 
-erro(1)=1 ; erro(2)=1 ; erro(3)=1; erro(4)=1;
+
+u1(1)=0 ; u1(2)=0 ; u1(3)=0; u1(4)=0;
+u2(1)=0 ; u2(2)=0 ; u2(3)=0; u2(4)=0;
+
+erro1(1)=1 ; erro1(2)=1 ; erro1(3)=1; erro1(4)=1;
+erro2(1)=1 ; erro2(2)=1 ; erro2(3)=1; erro2(4)=1;
 
 rlevel = 0.1;
 ruido = rlevel*rand(1,nptos);
 
-for i=5:nptos,
 
-P1(i) = p1+rlevel*rand; % Aplicando ruido na modelagem
-P2(i) = p2+ruido(i);  % Aplicando ruido na modelagem
-k = 2*P1(i)*P2(i); 
-    
-[c0,c1,c2,r0,r1,r2] = discretiza_zoh(P1(i),P2(i),k,Tc); %chama a função que discretiza o processo utilizano um ZOH;
-
-     if (i==550),r1 = - 1.84;r2 = 0.9109;  end % Ruptura no modelo
+for i=20:nptos,
+    % 
+     y11(i)= 0.9705*y11(i-1)+0.3776*u1(i-3);
+     y12(i)= 0.9765*y12(i-1)-0.4474*u2(i-7);
+     y21(i)= 0.9552*y21(i-1)+0.2959*u2(i-15);
+     y22(i)= 0.9659*y22(i-1)-0.6621*u2(i-7);
      
-     y(i)= -r1*y(i-1)-r2*y(i-2)+c0*u(i-2)+c1*u(i-3)+c2*u(i-4); % equação da diferença do processo
-     
-     erro(i)=ref(i)-y(i); %Erro
-      
-      %Controlador:
-
-%             alpha = (Kc)*(1+((Td)/Tamostra)+(Tamostra/(2*(Ti))));
-%             beta = -(Kc)*(1+2*((Td)/Tamostra)-(Tamostra/(2*(Ti))));
-%             gama = (Kc)*(Td)/Tamostra;
+     y1 = y11+y12
+     y2 = y21+y22
+       
+      tempo(i)=i*Tamostra;
             
-      % new version
-            alpha = Kc+ Kd/Tamostra + (Ki*Tamostra)/2;
-            beta = -(Kc) - 2*((Kd)/Tamostra)+(Ki*Tamostra)/2;
-            gama = (Kd)/Tamostra;
-
-
-            u(i)= u(i-1) + alpha*erro(i) + beta*erro(i-1) + gama*erro(i-2);
-      
-       tempo(i)=i*Tamostra;
-      fprintf('amostra:  %d \t entrada:  %6.3f \t saida:  %4.0f\n',i,u(i),y(i));
-      
  end ;
- 
- 
-     ISE_t2 = objfunc(erro,tempo,'ISE')
-     ITSE_t2 = objfunc(erro,tempo,'ITSE')
-     ITAE_t2 = objfunc(erro,tempo,'ITAE')
-     IAE_t2 = objfunc(erro,tempo,'IAE')
-     
+%% 
+figure;
+t = tiledlayout(2,2);
+nexttile
+plot(tempo,y11)
+nexttile
+plot(tempo,y12)
+nexttile
+plot(tempo,y21)
+nexttile
+plot(tempo,y22)
+
+%%
 %plotar seinal de saida e  de controle:    
 figure;
 grid;
-plot(tempo,y,'g-');
-hold on;
-plot(tempo,u);
-plot(tempo,ref);
-title(['AT-PID-FG:',num2str(rlevel), ' ISE:', num2str(ISE_t2), ', ITSE:' ,num2str(ITSE_t2),', IAE:' ,num2str(IAE_t2), ', ITAE:' ,num2str(ITAE_t2)])
-%%
-%plotar P1 e P2
+plot(tempo,y1,'g-');
 figure;
 grid;
-plot(tempo,P1,'g-');
-hold on;
-plot(tempo,P2);
+plot(tempo,y2,'g-');
+
+
+%plot(tempo,ref);
+%title(['AT-PID-FG:',num2str(rlevel), ' ISE:', num2str(ISE_t2), ', ITSE:' ,num2str(ITSE_t2),', IAE:' ,num2str(IAE_t2), ', ITAE:' ,num2str(ITAE_t2)])
 
 
