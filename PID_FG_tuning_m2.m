@@ -18,9 +18,9 @@ Tamostra = .5
 n = 200;
 
 ep = eps;
-maxi=max(y1(nptos/2:end));
-mini= min(y1(nptos/2:end));
-d=(dh-dl)/2 
+maxi=max(y2(nptos/2:end));
+mini= min(y2(nptos/2:end));
+d=(dl-dh)/2 
 %%  
 a=(maxi-mini)/2
   img=((pi*ep)/(4*d))
@@ -29,7 +29,7 @@ a=(maxi-mini)/2
 
 kont = 0;
 for t = 4:Qde_amostras,
-   if u1(t) ~= u1(t-1)
+   if u2(t) ~= u2(t-1)
       kont = kont + 1;
       ch(kont) = t;
    end
@@ -42,14 +42,14 @@ w = (2*pi)/(Tu)
 % --- Calcula valor de pico positivo
 amp_max = eps;
 for t =1:Qde_amostras,
-   if y1(t) >= amp_max  amp_max = y1(t); end;
+   if y2(t) >= amp_max  amp_max = y2(t); end;
 end;
 %%
 num = 0;
 den = 0;
 for j=(n/2):(n/2)+ceil(Tu),
-    num = num + y1(j);
-    den = den + u1(j);
+    num = num + y2(j);
+    den = den + u2(j);
 end
 Kp = num/den
   %******************Calculo ganho e fase do processo*******
@@ -64,7 +64,7 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d)
     b = sin(w*L)/(w*Ku);
     a = (c + cos(w*L))/(w^2);
     
-%% Sintonizanodo o PID:
+%% Sintonizanodo o PID: AT-PID-FG
 
     Am = 5;
     Theta_m = (180/2)*(1-(1/Am));
@@ -78,5 +78,4 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d)
 
     Td = Kd/Kc;
     Ti = Kc/Ki;
-    
     

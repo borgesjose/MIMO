@@ -64,7 +64,7 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d)
     b = sin(w*L)/(w*Ku);
     a = (c + cos(w*L))/(w^2);
     
-%% Sintonizanodo o PID:
+%% Sintonizanodo o PID: AT-PID-FG
 
     Am = 5;
     Theta_m = (180/2)*(1-(1/Am));
@@ -78,5 +78,4 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d)
 
     Td = Kd/Kc;
     Ti = Kc/Ki;
-    
     

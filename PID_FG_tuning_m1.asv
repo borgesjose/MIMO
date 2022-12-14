@@ -1,5 +1,20 @@
+load 'y1.dat'
+load 'y2.dat'
+load 'u1.dat'
+load 'u2.dat'
+load 'tempo.dat'
+load 'ref1.dat'
+load 'ref2.dat'
+load 'erro1.dat'
+load 'erro2.dat'
+load 'dl.dat'
+load 'dh.dat'
+load 'eps.dat'
+load 'nptos.dat'
 
+%%
 Qde_amostras = nptos ;
+Tamostra = .5
 n = 200;
 
 ep = eps;
@@ -43,15 +58,15 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d)
     Ku = -1/gw;
     %Tu = (2*pi)/w; 
 
-    L = 12;
+    L = 2;
    
     c = 1/Kp;
     b = sin(w*L)/(w*Ku);
     a = (c + cos(w*L))/(w^2);
     
-%% Sintonizanodo o PID:
+%% Sintonizanodo o PID: AT-PID-FG
 
-    Am = 1;
+    Am = 5;
     Theta_m = (180/2)*(1-(1/Am));
 
     K = (pi/(2*Am*L))*[b;c;a];
@@ -63,5 +78,4 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d)
 
     Td = Kd/Kc;
     Ti = Kc/Ki;
-    
     
