@@ -58,7 +58,7 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d)
     Ku = -1/gw;
     %Tu = (2*pi)/w; 
 
-    L = 2;
+    L = 20;
    
     c = 1/Kp;
     b = sin(w*L)/(w*Ku);
@@ -78,4 +78,14 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d)
 
     Td = Kd/Kc;
     Ti = Kc/Ki;
-    
+%%
+% Salvar dados:
+format shortg;
+data_horario_test = datestr(clock,'yyyy-mm-dd THH-MM-SS');
+
+trail = ['./results/','PID_FG_malha1','/',data_horario_test];
+if (~exist(trail)) mkdir(trail);end   
+save([trail, '/Kc1.dat'],'Kc', '-ascii')
+save([trail, '/Ki1.dat'],'Ki', '-ascii')
+save ([trail, '/Kd1.dat'], 'Kd', '-ascii')
+

@@ -11,12 +11,12 @@
 
 %% Aplicando o controlador - OLD version
 nptos = 1000;
-    Tc=0.5;
-    Tamostra = Tc;
-eps=1;
+Tc=0.5;
+Tamostra = Tc;
 eps=10;
-dh=-10;
-dl=10;
+%eps=10;
+dh= -1;
+dl= 1;
 
 % REF 1
 for i=1:nptos,
@@ -25,8 +25,8 @@ for i=1:nptos,
 end ;
 % REF 2
 for i=1:nptos,
-    if (i<=nptos/2)  ref2(i)=0.5; end;
-    if (i>nptos/2)   ref2(i) = 1; end;
+    if (i<=nptos/2)  ref2(i)=0; end;
+    if (i>nptos/2)   ref2(i) = 0; end;
 end ;
 
 for i=1:nptos,
@@ -36,8 +36,8 @@ for i=1:nptos,
     y12(i) = 0;
     y21(i) = 0;
     y22(i)=0;
-    u1(1)=dh; 
-    u2(i) = 1;
+    u2(i)=dh; 
+    u1(i) = 1;
     erro1(1)= 0; 
     erro2(1)= 0; 
 end
@@ -54,15 +54,25 @@ erro2(1)=1 ; erro2(2)=1 ; erro2(3)=1; erro2(4)=1;
 
 rlevel = 0.1;
 ruido = rlevel*rand(1,nptos);
-
-Kc1 = 6.4140;
-Ki1 = 4.2134;
-Kd1 = 2.4404;
-
+%%%%%%%%%%%%%%%%%
+%Astrom
+% Kc1 = 7.9987;
+% Ki1 = 1.5511;
+% Kd1 = 10.3115;
+%AT_PID_FG
+Kc1 = 0.0607;
+Ki1 = 0.053103;
+Kd1 = 0.39175;
+%%%%%%%%%%%%%%%%%%%
+%Astrom
 % Kc2 = 6.8050;
 % Ki2 = 4.9662;
 % Kd2 = 2.3312;
-
+%AT_PID_FG
+% Kc2 = 6.8050;
+% Ki2 = 4.9662;
+% Kd2 = 2.3312;
+%%%%%%%%%%%%%%%%%%%%%%%
 
 for i=20:nptos,
     % 
@@ -83,9 +93,9 @@ for i=20:nptos,
             beta1 = -(Kc1) - 2*((Kd1)/Tamostra)+(Ki1*Tamostra)/2;
             gama1 = (Kd1)/Tamostra;
 %             % GC2
-            alpha2 = Kc2+ Kd2/Tamostra + (Ki2*Tamostra)/2;
-            beta2 = -(Kc2) - 2*((Kd2)/Tamostra)+(Ki2*Tamostra)/2;
-            gama2 = (Kd2)/Tamostra;
+%             alpha2 = Kc2+ Kd2/Tamostra + (Ki2*Tamostra)/2;
+%             beta2 = -(Kc2) - 2*((Kd2)/Tamostra)+(Ki2*Tamostra)/2;
+%             gama2 = (Kd2)/Tamostra;
 
 
                 u1(i)= u1(i-1) + alpha1*erro1(i) + beta1*erro1(i-1) + gama1*erro1(i-2);
@@ -95,20 +105,19 @@ for i=20:nptos,
 %                if ((abs(erro1(i)) < eps) & (u1(i-1) == dh))   u1(i) =  dh; end;
 %                if ((abs(erro1(i)) < eps) & (u1(i-1) == dl))  u1(i) = dl; end;
                
-            u2(i)= u2(i-1) + alpha2*erro2(i) + beta2*erro2(i-1) + gama2*erro2(i-2);
-%                if ((abs(erro2(i)) >= eps) & (erro2(i)  >0))      u2(i) =  dh; end;
-%                if ((abs(erro2(i)) > eps) & (erro2(i) < 0))      u2(i) = dl; end;
-%                if ((abs(erro2(i)) < eps) & (u2(i-1) == dh))   u2(i) =  dh; end;
-%                if ((abs(erro2(i)) < eps) & (u2(i-1) == dl))  u2(i) = dl; end;
+%                u2(i)= u2(i-1) + alpha2*erro2(i) + beta2*erro2(i-1) + gama2*erro2(i-2);
+               if ((abs(erro2(i)) >= eps) & (erro2(i)  >0))      u2(i) =  dh; end;
+               if ((abs(erro2(i)) > eps) & (erro2(i) < 0))      u2(i) = dl; end;
+               if ((abs(erro2(i)) < eps) & (u2(i-1) == dh))   u2(i) =  dh; end;
+               if ((abs(erro2(i)) < eps) & (u2(i-1) == dl))  u2(i) = dl; end;
       
       tempo(i)=i*Tamostra;
       
       
  end ;
-%% 
-
 
 %%
+
 figure;
 t = tiledlayout(2,2);
 nexttile
@@ -133,17 +142,22 @@ grid;
 plot(tempo,y1,'g-');
 hold on
 plot(tempo,u1,'r-');
+plot(tempo,ref1,'r-');
+legend('y1','u1','ref')
+
 figure;
 grid;
 plot(tempo,y2,'g-');
 hold on
 plot(tempo,u2,'r-');
+plot(tempo,ref2,'r-');
+legend('y2','u2','ref')
 
 %plot(tempo,ref);
 %title(['AT-PID-FG:',num2str(rlevel), ' ISE:', num2str(ISE_t2), ', ITSE:' ,num2str(ITSE_t2),', IAE:' ,num2str(IAE_t2), ', ITAE:' ,num2str(ITAE_t2)])
 %%
 % Salvar dados:
-trail = ['./results/','teste-pid','/','malha2'];
+trail = ['./results/','relay','/','malha2'];
 if (~exist(trail)) mkdir(trail);end   
 save([trail, '/y1.dat'],'y1', '-ascii')
 save([trail, '/y2.dat'],'y2', '-ascii')
@@ -162,6 +176,9 @@ save([trail, '/dl.dat'],'dl', '-ascii')
 save([trail, '/eps.dat'],'eps', '-ascii')
 
 save([trail, '/nptos.dat'],'nptos', '-ascii')
-
+%%
+format shortg;
+data_horario_test = datestr(clock,'yyyy-mm-dd THH-MM-SS');
+save( [trail,'/','DATASET-',data_horario_test])
 
 

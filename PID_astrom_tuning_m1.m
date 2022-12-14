@@ -42,7 +42,7 @@ w = (2*pi)/(Tu)
 % --- Calcula valor de pico positivo
 amp_max = eps;
 for t =1:Qde_amostras,
-   if y1(t) >= amp_max  amp_max = y1(t); end;
+   if y2(t) >= amp_max  amp_max = y2(t); end;
 end;
 %%
 num = 0;
@@ -54,38 +54,51 @@ end
 Kp = num/den
   %******************Calculo ganho e fase do processo*******
 gw=-(pi*sqrt(a^2-eps^2))/(4*d)
+
+    
+%% %********Sintonia de Controladores PID Método do Astron (Ziegler-Nichols Modificado)
+P=0;
+I=0;
+D=0;
+%*********  Período de amostragem  *******
+% Ler do prompt - Tamostra=0.5;
+
+%***********  Dados do Relé  ****************
+% Ler do prompt
+
+%******************Identifica a FT do processo na frequência*******
+gw=-(pi*sqrt(a^2-eps^2))/(4*d) %PROCESSO: valor da ft pro relé.
+
+%gw = -0.2134+0.4488i;
+rp=abs(gw); 
+fip=atan(eps/sqrt(a^2-eps^2)); 
+%fip=angle(gw);
 %%
-    Ku = -1/gw;
-    %Tu = (2*pi)/w; 
+omega = w;
 
-    L = 7;
-   
-    c = 1/Kp;
-    b = sin(w*L)/(w*Ku);
-    a = (c + cos(w*L))/(w^2);
-    
-%% Sintonizanodo o PID: AT-PID-FG
+%*********Especificações*************
+fim=45;
+rs=8*rp;
+fis=pi*fim/180;
 
-    Am = 5;
-    Theta_m = (180/2)*(1-(1/Am));
+%*************Cálculo dos Parâmetros do Controlador***********
+Kc=rs*cos(fis-fip)/rp     
+aux1=sin(fis-fip)/cos(fis-fip);
+aux2=sqrt(1+aux1^2);
+aux3=aux1+aux2;
+Td=aux3/(2*omega);
+Ti=4*Td;
 
-    K = (pi/(2*Am*L))*[b;c;a];
-    Kc = K(1);
-    Ki = K(2);
-    Kd = K(3);
-    K
-    
+P=Kc
+I=Kc/Ti
+D=Kc*Td
 
-    Td = Kd/Kc;
-    Ti = Kc/Ki;
-
-% Salvar dados:
+%%
 format shortg;
 data_horario_test = datestr(clock,'yyyy-mm-dd THH-MM-SS');
 
-trail = ['./results/','PID_FG','/','malha1'];
+trail = ['./results/','Astrom_malha1','/',data_horario_test];
 if (~exist(trail)) mkdir(trail);end   
-save([trail, '/Kc1.dat'],'Kc', '-ascii')
-save([trail, '/Ki1.dat'],'Ki', '-ascii')
-save ([trail, '/Kd1.dat'], 'Kd', '-ascii')
-save ([trail, '/u2.dat'], 'u2', '-ascii')
+save([trail, '/Kc1.dat'],'P', '-ascii')
+save([trail, '/Ki1.dat'],'I', '-ascii')
+save ([trail, '/Kd1.dat'], 'D', '-ascii')
