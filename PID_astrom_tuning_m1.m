@@ -77,8 +77,8 @@ fip=atan(eps/sqrt(a^2-eps^2));
 omega = w;
 
 %*********Especificações*************
-fim=45;
-rs=8*rp;
+fim=90;
+rs=.5*rp;
 fis=pi*fim/180;
 
 %*************Cálculo dos Parâmetros do Controlador***********

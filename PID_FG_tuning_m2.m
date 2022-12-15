@@ -11,7 +11,10 @@ load 'dl.dat'
 load 'dh.dat'
 load 'eps.dat'
 load 'nptos.dat'
-
+%%
+plot(tempo,y2)
+hold on
+plot(tempo,u2)
 %%
 Qde_amostras = nptos ;
 Tamostra = .5
@@ -20,13 +23,13 @@ n = 200;
 ep = eps;
 maxi=max(y2(nptos/2:end));
 mini= min(y2(nptos/2:end));
-d=(dl-dh)/2
+d=(dl-dh)
 %%  
 a=(maxi-mini)/2
   img=((pi*ep)/(4*d))
   real=((-pi)/(4*d))*sqrt((a^2)-(ep^2))
   g=real-j*img
-
+%%
 kont = 0;
 for t = 4:Qde_amostras,
    if u2(t) ~= u2(t-1)
@@ -34,6 +37,7 @@ for t = 4:Qde_amostras,
       ch(kont) = t;
    end
 end
+%%
 Tu1 = (ch(3) - ch(2))*Tamostra
 Tu2 = (ch(4) - ch(3))*Tamostra
 Tu = Tu1 + Tu2
@@ -55,14 +59,14 @@ Kp = num/den
   %******************Calculo ganho e fase do processo*******
 gw=-(pi*sqrt(a^2-eps^2))/(4*d)
 %%
-    Ku = -1/gw;
+    Ku = -1/gw
     %Tu = (2*pi)/w; 
 
-    L = 20;
+    L = 10;
    
-    c = 1/Kp;
-    b = sin(w*L)/(w*Ku);
-    a = (c + cos(w*L))/(w^2);
+    c = 1/Kp
+    b = sin(w*L)/(w*Ku)
+    a = (c + cos(w*L))/(w^2)
     
 %% Sintonizanodo o PID: AT-PID-FG
 

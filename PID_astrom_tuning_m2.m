@@ -13,6 +13,7 @@ load 'eps.dat'
 load 'nptos.dat'
 
 %%
+
 Qde_amostras = nptos ;
 Tamostra = .5
 n = 200;
@@ -20,7 +21,8 @@ n = 200;
 ep = eps;
 maxi=max(y2(nptos/2:end));
 mini= min(y2(nptos/2:end));
-d=(dl-dh)/2 
+d=(dl-dh) 
+
 %%  
 a=(maxi-mini)/2
   img=((pi*ep)/(4*d))
@@ -71,14 +73,14 @@ gw=-(pi*sqrt(a^2-eps^2))/(4*d) %PROCESSO: valor da ft pro relé.
 
 %gw = -0.2134+0.4488i;
 rp=abs(gw); 
-fip=atan(eps/sqrt(a^2-eps^2)); 
-%fip=angle(gw);
+fip=atan(eps/sqrt(a^2-eps^2))
+%fip=angle(gw)
 %%
-omega = 2.618;
+omega = w;
 
 %*********Especificações*************
-fim=45;
-rs=8*rp;
+fim= 210;
+rs=.15*rp;
 fis=pi*fim/180;
 
 %*************Cálculo dos Parâmetros do Controlador***********

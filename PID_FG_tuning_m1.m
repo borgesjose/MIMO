@@ -20,7 +20,7 @@ n = 200;
 ep = eps;
 maxi=max(y1(nptos/2:end));
 mini= min(y1(nptos/2:end));
-d=(dh-dl)/2 
+d=(dh-dl)/2
 %%  
 a=(maxi-mini)/2
   img=((pi*ep)/(4*d))
