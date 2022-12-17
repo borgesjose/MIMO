@@ -60,9 +60,9 @@ ruido = rlevel*rand(1,nptos);
 % Ki1 = 0.053103;
 % Kd1 = 0.39175;
 %round 2
-Kc1 = 0.25476;
-Ki1 = 0.025788;
-Kd1 = 0.62921;
+% Kc1 = 0.25476;
+% Ki1 = 0.025788;
+% Kd1 = 0.62921;
 %round 3
 Kc1 = 0.123;
 Ki1 = 0.012;
@@ -77,9 +77,9 @@ Kc2 =  -0.14366;
 Ki2 =-0.029189;
 Kd2 =-0.17676;
 % round 3
-Kc2 =  -0.165;
-Ki2 =-0.026;
-Kd2 =-0.27676;
+% Kc2 =  -0.165;
+% Ki2 =-0.026;
+% Kd2 =-0.27676;
 %%%%%%%%%%%%%%%%%%%%%%%
 
     
@@ -176,7 +176,7 @@ trail = ['./results/','pid-3','/','malha1'];
 if (~exist(trail)) mkdir(trail);end   
 save([trail, '/y1.dat'],'y1', '-ascii')
 save([trail, '/y2.dat'],'y2', '-ascii')
-
+ 
 save ([trail, '/u1.dat'], 'u1', '-ascii')
 save ([trail, '/u2.dat'], 'u2', '-ascii')
 
